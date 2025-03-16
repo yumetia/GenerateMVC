@@ -63,7 +63,10 @@ class GenerateMVC
             }
 
             if (!in_array($key, $avoidItem)) {
-                mkdir("../$key", 0777, true); // main dir
+                if (!is_dir("../$key")) {
+                    mkdir("../$key", 0777, true); // main dir
+                }
+                
 
                 if (!is_array($values)) {
                     $values = [$values]; // Making sure $values is always an array
@@ -72,7 +75,7 @@ class GenerateMVC
                 foreach ($values as $value) {
                     if (strpos($value, ".") !== false) {
                         $this->createFile("../$key/$value"); // files
-                    } else {
+                    } elseif (!is_dir("../$key/$value")){
                         mkdir("../$key/$value", 0777, true); // subdir
                     }
                 }
@@ -116,7 +119,9 @@ spl_autoload_register(function (\$class) {
                 break;
 
             default:
-                touch($filePath); // empty file
+                if (!file_exists($filePath)) {
+                    touch($filePath); // empty file
+                }
                 break;
         }
     }
